@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium Calculator</title>
+  <link rel="stylesheet" href="style.css?v=8" />
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <div class="calculator-card">
+    <div class="display">
+      <span id="history"></span>
+      <h1 id="result">0</h1>
+    </div>
+
+    <div class="buttons">
+      <button class="light">AC</button>
+      <button class="light">&plusmn;</button>
+      <button class="light">%</button>
+      <button class="operator">&divide;</button>
+
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+      <button class="operator">&times;</button>
+
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button class="operator">&minus;</button>
+
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button class="operator">+</button>
+
+      <button class="zero">0</button>
+      <button>.</button>
+      <button class="equal">=</button>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="modal hidden" id="paymentModal">
+    <div class="modal-card payment-style" role="dialog" aria-labelledby="paymentTitle">
+      <div class="payment-header">
+        <div class="lock-icon" aria-hidden="true"><span></span></div>
+        <h2 id="paymentTitle">Buka Hasil Perhitungan</h2>
+        <p>Pilih paket yang sesuai untuk melihat hasil perhitungan Anda.</p>
+      </div>
+
+      <section class="payment-plan single-plan selected" aria-label="Paket satu kali bayar">
+        <div class="plan-icon wallet-icon" aria-hidden="true"></div>
+        <div class="plan-copy">
+          <small>SATU KALI BAYAR</small>
+          <h3>Rp2.000</h3>
+          <p>Akses hasil perhitungan sekali bayar.</p>
+        </div>
+        <button onclick="selectPlan('single')">Pilih Paket</button>
+      </section>
+
+      <section class="payment-plan premium-plan" aria-label="Paket terbaik">
+        <div class="best-badge"><span aria-hidden="true">&starf;</span> PAKET TERBAIK</div>
+        <div class="plan-icon crown-icon" aria-hidden="true"></div>
+        <div class="plan-copy">
+          <small>AKSES SELAMANYA</small>
+          <h3>Rp50.000</h3>
+          <p>Akses tanpa batas ke semua hasil perhitungan selamanya.</p>
+        </div>
+        <button onclick="selectPlan('premium')">Pilih Paket</button>
+      </section>
+
+      <section class="qris-panel" aria-label="Instruksi pembayaran QRIS">
+        <div class="qris-steps">
+          <h3><span class="shield-icon" aria-hidden="true"></span> BAYAR DENGAN QRIS</h3>
+
+          <ol>
+            <li><span>1</span>Buka aplikasi e-wallet atau mobile banking Anda</li>
+            <li><span>2</span>Scan kode QR di samping</li>
+            <li><span>3</span>Transfer sesuai nominal</li>
+            <li><span>4</span>Kirim bukti ke admin, lalu masukkan kode akses</li>
+          </ol>
+
+          <div class="qris-note">
+            <strong>i</strong>
+            <p id="qrisNoteText">Pastikan nominal Rp2.000 sesuai agar pembayaran dapat terverifikasi.</p>
+          </div>
+        </div>
+
+        <div class="qris-image-wrap">
+          <img id="qrisImage" src="assets/2000.jpeg" alt="Kode QRIS pembayaran Rp2.000" />
+        </div>
+
+        <a class="download-qris" id="downloadQris" href="assets/2000.jpeg" download="qris-rp2000.jpeg">
+          Download QRIS
+        </a>
+
+        <div class="manual-access">
+          <div class="request-code-box">
+            <span>Kode Request</span>
+            <strong id="requestCode">000000</strong>
+          </div>
+
+          <a class="paid-whatsapp" id="paidWhatsapp" href="#" target="_blank" rel="noopener">
+            Saya Sudah Bayar
+          </a>
+
+          <label class="access-code-field" for="accessCodeInput">
+            <span>Kode Akses dari Admin</span>
+            <input id="accessCodeInput" inputmode="numeric" maxlength="6" placeholder="6 digit" />
+          </label>
+
+          <p class="access-error" id="accessError" aria-live="polite"></p>
+
+          <button class="unlock-result-btn" onclick="unlockWithAccessCode()">
+            Buka Hasil
+          </button>
+        </div>
+      </section>
+
+      <section class="wallet-support" aria-label="E-wallet dan bank yang didukung">
+        <p>E-WALLET &amp; BANK YANG DIDUKUNG</p>
+        <div class="wallet-badges">
+          <span>DANA</span>
+          <span>OVO</span>
+          <span>gopay</span>
+          <span>ShopeePay</span>
+          <span>LinkAja!</span>
+          <span>BRImo</span>
+          <span>BCA mobile</span>
+        </div>
+        <small>dan semua aplikasi berlogo QRIS</small>
+      </section>
+
+      <footer class="payment-footer">
+        <div>
+          <span class="footer-icon secure" aria-hidden="true"></span>
+          <strong>Transaksi Aman</strong>
+          <p>100% aman &amp; terenkripsi</p>
+        </div>
+        <div>
+          <span class="footer-icon instant" aria-hidden="true"></span>
+          <strong>Proses Instan</strong>
+          <p>Hasil terbuka otomatis</p>
+        </div>
+        <div>
+          <span class="footer-icon help" aria-hidden="true"></span>
+          <strong>Bantuan 24/7</strong>
+          <p>Kami siap membantu Anda</p>
+        </div>
+      </footer>
+
+      <p class="secure-line"><span aria-hidden="true"></span> Pembayaran aman dengan QRIS</p>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal hidden" id="successModal">
+    <div class="modal-card success-style">
+      <span class="result-tag">HASIL ANDA</span>
+      <p class="mini">9 + 5</p>
+      <h1 id="finalResult">14</h1>
+      <p>Terima kasih, pembayaran berhasil.</p>
+      <div class="development-note">
+        <p>Uang ini digunakan untuk pengembangan fitur:</p>
+        <ul>
+          <li>AI analysis</li>
+          <li>laporan premium</li>
+          <li>export PDF</li>
+          <li>prediksi</li>
+          <li>simulasi finansial</li>
+          <li>tools niche tertentu</li>
+        </ul>
+      </div>
+
+      <button class="primary-btn" onclick="closeSuccess()">
+        Hitung lagi
+      </button>
+    </div>
+  </div>
+
+  <script src="script.js?v=8"></script>
+</body>
+</html>
